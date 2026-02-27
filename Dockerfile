@@ -40,12 +40,15 @@ USER appuser
 # Expose port
 EXPOSE 8080
 
-# Health check
+# Health check using wget (available in chiseled JRE via base image networking tools)
+# Alternatively, the app can be checked at the Java level via actuator endpoints
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl --fail http://localhost:8080/actuator/health/readiness || exit 1
+    CMD wget -q -O- http://localhost:8080/actuator/health/readiness > /dev/null 2>&1 || exit 1
 
 # JVM tuning for containers
+# Environment variable expansion in CMD form allows runtime override
 ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -Xmx512m -Xms256m"
 
-# Run the application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Run the application using CMD (not ENTRYPOINT) to allow variable expansion
+# The sh -c form enables shell expansion of $JAVA_OPTS at container start time
+CMD ["sh", "-c", "exec java ${JAVA_OPTS} -jar app.jar"]

@@ -32,18 +32,22 @@ logs/
 .temp/
 .tmp/
 
-# Docker
+# Docker build artifacts (exclude build context but keep runtime scripts)
 Dockerfile
 docker-compose.yml
 .dockerignore
-docker/
+
+# Note: docker/ directory is NOT excluded because it contains:
+# - init-db.sql: PostgreSQL initialization script (mounted at runtime)
+# - entrypoint.sh: Container startup script (if used)
+# - Other helper scripts needed for container initialization
 
 # Environment
 .env
 .env.local
 .env.*.local
 
-# Documentation
+# Documentation (exclude from image to reduce size)
 docs/
 README.md
 DEPLOYMENT.md

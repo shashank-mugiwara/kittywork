@@ -45,6 +45,8 @@ services:
       # AWS S3 Configuration
       AWS_S3_BUCKET: ${AWS_S3_BUCKET:-kittywork-resumes-dev}
       AWS_S3_REGION: ${AWS_S3_REGION:-us-east-1}
+      # Note: Leave AWS credentials empty for IAM role-based auth in production
+      # For dev: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (see .env.example for details)
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       
@@ -57,7 +59,7 @@ services:
       LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT:-INFO}
       LOGGING_LEVEL_COM_KITTYWORK: ${LOGGING_LEVEL_COM_KITTYWORK:-INFO}
       
-      # JVM Tuning
+      # JVM Tuning (must match Dockerfile ENV JAVA_OPTS or override here)
       JAVA_OPTS: ${JAVA_OPTS:--XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -Xmx512m -Xms256m}
     ports:
       - "${APP_PORT:-8080}:8080"
@@ -68,7 +70,8 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/actuator/health/readiness"]
+      # Using wget instead of curl (available in chiseled JRE)
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8080/actuator/health/readiness"]
       interval: 30s
       timeout: 10s
       retries: 3
