@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Maven
+target/
+.m2/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+.maven-*.xml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.class
+
+# Logs
+*.log
+logs/
+
+# Temp files
+.temp/
+.tmp/
+
+# Docker build artifacts (exclude build context but keep runtime scripts)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Note: docker/ directory is NOT excluded because it contains:
+# - init-db.sql: PostgreSQL initialization script (mounted at runtime)
+# - entrypoint.sh: Container startup script (if used)
+# - Other helper scripts needed for container initialization
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Documentation (exclude from image to reduce size)
+docs/
+README.md
+DEPLOYMENT.md
+CONTRIBUTING.md
